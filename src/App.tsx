@@ -1,4 +1,4 @@
-import { useState, type FC, type JSX } from "react";
+import { useState, type ChangeEvent, type FC, type JSX } from "react";
 import "./app.css";
 import calculateString from "./stringCalculator";
 
@@ -6,18 +6,30 @@ const App: FC = (): JSX.Element => {
   // Local States
   const [input, setInput] = useState<string>("");
   const [result, setResult] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isResultFetched, setIsResultFetched] = useState<boolean>(false);
 
   // Variables
   const canCalculate = input.trim() !== "";
-  const canShowResult = canCalculate && result;
-  const canShowError = canCalculate && isResultFetched && !result;
+  const canShowResult = canCalculate && result !== null;
+  const canShowError = canCalculate && isResultFetched && error;
 
   // Functions
-  const onClickCta = (): void => {
+  const onChangeTextArea = (event: ChangeEvent<HTMLTextAreaElement>): void => {
     setResult(null);
+    setError(null);
+    setIsResultFetched(false);
+    setInput(event.target.value);
+  };
 
-    calculateString({ input, setResult });
+  const onClickButton = (): void => {
+    try {
+      setResult(calculateString(input));
+      setError(null);
+    } catch (error) {
+      setResult(null);
+      setError(error instanceof Error ? error.message : String(error));
+    }
 
     setIsResultFetched(true);
   };
@@ -42,18 +54,15 @@ const App: FC = (): JSX.Element => {
         placeholder="e.g. 1,2,3 or 1\n2\n3"
         aria-label="Enter numbers separated by commas or newlines"
         value={input}
-        onChange={(e) => {
-          setIsResultFetched(false);
-          setResult(null);
-          setInput(e.target.value);
-        }}
+        onChange={onChangeTextArea}
         className="textArea"
+        rows={5}
       />
 
       <button
         type="button"
         aria-label="Calculate sum of entered numbers"
-        onClick={onClickCta}
+        onClick={onClickButton}
         className="button"
         disabled={!canCalculate}
         aria-disabled={!canCalculate}
@@ -61,11 +70,17 @@ const App: FC = (): JSX.Element => {
         Calculate
       </button>
 
-      {canShowResult ? <p className="resultText">Result: {result}</p> : null}
+      {canShowResult || canShowError ? (
+        <div aria-live="polite">
+          {canShowResult ? (
+            <p className="resultText">Result: {result}</p>
+          ) : null}
 
-      {canShowError ? (
-        <div role="alert" className="errorText">
-          Make sure you enter numbers correctly!
+          {canShowError ? (
+            <div role="alert" className="errorText">
+              {error || "Make sure you enter numbers correctly!"}
+            </div>
+          ) : null}
         </div>
       ) : null}
     </main>

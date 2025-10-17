@@ -1,15 +1,6 @@
-import type { Dispatch, SetStateAction } from "react";
-
-const calculateString = ({
-  input,
-  setResult,
-}: {
-  input: string;
-  setResult: Dispatch<SetStateAction<number | null>>;
-}): void => {
+const calculateString = (input: string): number => {
   if (input.trim() === "") {
-    setResult(0);
-    return;
+    return 0;
   }
 
   const numbers = input
@@ -18,13 +9,16 @@ const calculateString = ({
     .map(Number);
 
   const negatives = numbers.filter((n) => n < 0);
+
   if (negatives.length > 0) {
     throw new Error("Negative numbers not allowed: " + negatives.join(", "));
   }
 
-  const sum = numbers.reduce((acc, curr) => acc + curr, 0);
+  if (numbers.some(isNaN)) {
+    throw new Error("Input contains invalid numbers");
+  }
 
-  setResult(sum);
+  return numbers.reduce((acc, curr) => acc + curr, 0);
 };
 
 export default calculateString;
