@@ -6,10 +6,21 @@ const App: FC = (): JSX.Element => {
   // Local States
   const [input, setInput] = useState<string>("");
   const [result, setResult] = useState<number | null>(null);
+  const [isResultFetched, setIsResultFetched] = useState<boolean>(false);
 
   // Variables
   const canCalculate = input.trim() !== "";
-  const canShowResult = canCalculate && result !== null;
+  const canShowResult = canCalculate && result;
+  const canShowError = canCalculate && isResultFetched && !result;
+
+  // Functions
+  const onClickCta = (): void => {
+    setResult(null);
+
+    calculateString({ input, setResult });
+
+    setIsResultFetched(true);
+  };
 
   return (
     <main className="App">
@@ -32,6 +43,7 @@ const App: FC = (): JSX.Element => {
         aria-label="Enter numbers separated by commas or newlines"
         value={input}
         onChange={(e) => {
+          setIsResultFetched(false);
           setResult(null);
           setInput(e.target.value);
         }}
@@ -41,7 +53,7 @@ const App: FC = (): JSX.Element => {
       <button
         type="button"
         aria-label="Calculate sum of entered numbers"
-        onClick={calculateString.bind(null, { input, setResult })}
+        onClick={onClickCta}
         className="button"
         disabled={!canCalculate}
         aria-disabled={!canCalculate}
@@ -51,7 +63,11 @@ const App: FC = (): JSX.Element => {
 
       {canShowResult ? <p className="resultText">Result: {result}</p> : null}
 
-      <p className="description">Make sure you enter numbers correctly!</p>
+      {canShowError ? (
+        <div role="alert" className="errorText">
+          Make sure you enter numbers correctly!
+        </div>
+      ) : null}
     </main>
   );
 };
