@@ -1,4 +1,4 @@
-# Incubyte React Accessibility & String Calculator Project by Ajay Soni
+# Incubyte React Accessibility & String Calculator Project
 
 ## Overview
 
@@ -47,10 +47,10 @@ The solution follows **Test-Driven Development (TDD)** best practices, with incr
 
 src/
 
-- App.tsx ###Main accessible UI
-- app.css ###Improved accessible styling
-- stringCalculator.ts ###Calculator logic implementation
-- stringCalculator.test.ts ###TDD unit tests with Vitest
+- App.tsx **Main accessible UI**
+- app.css **Improved accessible styling**
+- stringCalculator.ts **Calculator logic implementation**
+- stringCalculator.test.ts **TDD unit tests with Vitest**
 
 ---
 
@@ -116,7 +116,3 @@ Each commit reflects a clear evolution — from red → green → refactor.
 ## Author
 
 **Name:** Ajay Soni
-
-**Role:** Candidate for Software Craftsperson – React Accessibility (3–5 Years)
-
-**Company:** Incubyte (Assignment Submission)
