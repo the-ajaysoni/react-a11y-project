@@ -1,47 +1,58 @@
-import { useState } from 'react';
+import { useState, type FC, type JSX } from "react";
+import "./app.css";
+import calculateString from "./stringCalculator";
 
-const App = () => {
-  const [input, setInput] = useState('');
-  const [result] = useState(null);
+const App: FC = (): JSX.Element => {
+  // Local States
+  const [input, setInput] = useState<string>("");
+  const [result, setResult] = useState<number | null>(null);
 
-  const handleCalculate = () => {};
+  // Variables
+  const canCalculate = input.trim() !== "";
+  const canShowResult = canCalculate && result !== null;
 
   return (
-    <div style={{ padding: '20px', backgroundColor: '#fff', color: '#aaa' }}>
+    <main className="App">
       <img
-        src='https://images.unsplash.com/photo-1594352161389-11756265d1b5?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-        width={600}
-        height={400}
+        src="https://images.unsplash.com/photo-1594352161389-11756265d1b5?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        alt="Abstract Image"
+        className="headerImage"
       />
 
-      <h2>String Calculator</h2>
+      <h1 className="heading">String Calculator</h1>
 
-      <h1 style={{ fontSize: '20px' }}>Enter numbers</h1>
+      <label htmlFor="numbersInput" className="label">
+        Enter numbers separated by commas or newlines:
+      </label>
 
       <textarea
-        style={{ margin: '10px 0', color: '#aaa' }}
-        placeholder='Enter numbers'
+        id="numbersInput"
+        aria-describedby="inputHelp"
+        placeholder="e.g. 1,2,3 or 1\n2\n3"
+        aria-label="Enter numbers separated by commas or newlines"
         value={input}
-        onChange={(e) => setInput(e.target.value)}
+        onChange={(e) => {
+          setResult(null);
+          setInput(e.target.value);
+        }}
+        className="textArea"
       />
 
-      <div
-        onClick={handleCalculate}
-        style={{
-          padding: '10px',
-          backgroundColor: '#008cba',
-          color: '#fff',
-          border: 'none',
-        }}>
+      <button
+        type="button"
+        aria-label="Calculate sum of entered numbers"
+        onClick={calculateString.bind(null, { input, setResult })}
+        className="button"
+        disabled={!canCalculate}
+        aria-disabled={!canCalculate}
+      >
         Calculate
-      </div>
+      </button>
 
-      {result !== null && <p style={{ color: 'green' }}>Result: {result}</p>}
+      {canShowResult ? <p className="resultText">Result: {result}</p> : null}
 
-      <div role='alert'>
-        <p>Make sure you enter numbers correctly!</p>
-      </div>
-    </div>
+      <p className="description">Make sure you enter numbers correctly!</p>
+    </main>
   );
 };
 
